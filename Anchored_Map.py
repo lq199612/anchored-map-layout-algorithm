@@ -144,8 +144,6 @@ def FR(g, A, random_pos,iterations,show_img):
     B = np.array(A)
     pos = fruchterman_reingold_init(g,matri,pos=random_pos,fixed=B,iterations=iterations)
     if show_img:
-        print('B',B)
-        print('g.nodes',g.nodes)
         node_color = ['blue' if i in B else 'black' for i in g.nodes]
         plt.figure(figsize=(100,100))
         ax = plt.subplot(4,5,1)
