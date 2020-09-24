@@ -71,7 +71,6 @@ def searching_optimal_order(A_, m):
                 j = (i+d) % k
                 A[i], A[j] = A[j], A[i]
                 p1 = caculate_penalty(A, m)
-                # print('p1',p1)
                 if p1 < p0:
                     p0 = p1
                     c = True
@@ -84,12 +83,7 @@ def pos_init(g, A, anchored_pos):
     anchored_pos_ = {}   
     for idx, i in enumerate(A):
         anchored_pos_[i] = anchored_pos[idx]
-    # sort_key = sorted(anchored_pos_.keys())
     random_pos = rdm().rand(len(g),2)
-    # anchored_pos_sorted = {k:anchored_pos_[k] for k in sort_key}
-    # print('pre',random_pos)
-    # for k in anchored_pos_sorted:
-    #     random_pos[k] = anchored_pos_sorted[k]
     anchored_pos_sorted = {}
     for k in anchored_pos_:
         random_pos[k] = anchored_pos_[k]
@@ -149,7 +143,6 @@ def fruchterman_reingold_init(
     
     return pos           
 
-    
 def FR(g, A, random_pos,iterations,show_img):
     matri = nx.to_numpy_array(g, weight='weight')
     B = np.array(A)
@@ -164,7 +157,6 @@ def FR(g, A, random_pos,iterations,show_img):
         nx.draw(g,pos=pos,node_size =55,font_size=20,ax=ax,node_color=node_color,with_labels=True)
         plt.show()
     return pos
-
 
 def read_json_file(file_path):
     with open(file_path,'r',encoding='utf8')as fp:
@@ -205,27 +197,6 @@ def Anchored_Map(json_file, choose='left', r=3, center=(0.5,0.5), iterations=150
  
 json_file = './data/test.json'  
 pos_res = Anchored_Map(json_file)
-
-#%%
-# node_color = ['blue' if i in B else 'black' for i in range(len(g))]
-#%% 修改文件
-# json_file = 'test.json'  
-# data = read_json_file(json_file)
-# d = {}
-# for idx,n in enumerate(data['nodes']):
-#     n['id_'] = idx
-    
-#     d[n['id']] = n
-# data['new_nodes'] = d
-# for e in data['links']:
-#     source_id = e['source']
-#     target_id = e['target']
-#     source = data['new_nodes'][str(source_id)]
-#     target = data['new_nodes'][str(target_id)]
-#     e['source_'] = source['id_']
-#     e['target_'] = target['id_']
-# write_dic(data, 'bipartite_test_add_id_.json')
-# pos_res, data = Anchored_Map(json_file)   
     
   
     
