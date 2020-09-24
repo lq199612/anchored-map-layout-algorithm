@@ -84,12 +84,7 @@ def pos_init(g, A, anchored_pos):
     anchored_pos_ = {}   
     for idx, i in enumerate(A):
         anchored_pos_[i] = anchored_pos[idx]
-    # sort_key = sorted(anchored_pos_.keys())
     random_pos = rdm().rand(len(g),2)
-    # anchored_pos_sorted = {k:anchored_pos_[k] for k in sort_key}
-    # print('pre',random_pos)
-    # for k in anchored_pos_sorted:
-    #     random_pos[k] = anchored_pos_sorted[k]
     anchored_pos_sorted = {}
     for k in anchored_pos_:
         random_pos[k] = anchored_pos_[k]
@@ -101,12 +96,10 @@ def fruchterman_reingold_init(
     # Position nodes in adjacency matrix A using Fruchterman-Reingold
     # Entry point for NetworkX graph is fruchterman_reingold_layout()
     nnodes, _ = A.shape
-    print('nnodes',nnodes)
     # 位置初始化
     if pos is None:
         seed = rdm()
         pos = np.asarray(seed.rand(nnodes, dim), dtype=A.dtype)
-        print('seed', type(seed) )
     else:
         pos = pos.astype(A.dtype)
     # 初始化k
@@ -117,15 +110,12 @@ def fruchterman_reingold_init(
     dt = t / float(iterations + 1)
     # 初始化 距离表  
     delta = np.zeros((pos.shape[0], pos.shape[0], pos.shape[1]), dtype=A.dtype)
-    # print('pos', pos)
     for iteration in range(iterations):
         # 计算每个点之间的距离
         delta = pos[:, np.newaxis, :] - pos[np.newaxis, :, :]  
-        distance = np.linalg.norm(delta, axis=-1)  # 求范数 默认二范数 可以求出不同点之间的距离 
-       
+        distance = np.linalg.norm(delta, axis=-1)  # 求范数 默认二范数 可以求出不同点之间的距离   
         # 制大小 最小为0.01    out：可以指定输出矩阵的对象，shape与a相同
         np.clip(distance, 0.01, None, out=distance) # 限
-        
         # 计算x,y方向上的累计位移
         a = (k * k / distance ** 2  - A * distance / k)
         displacement = np.einsum(
@@ -146,7 +136,6 @@ def fruchterman_reingold_init(
         if err < threshold:
             break
     pos = dict(zip(G, pos))
-    
     return pos           
 
     
@@ -164,7 +153,6 @@ def FR(g, A, random_pos,iterations,show_img):
         nx.draw(g,pos=pos,node_size =55,font_size=20,ax=ax,node_color=node_color,with_labels=True)
         plt.show()
     return pos
-
 
 def read_json_file(file_path):
     with open(file_path,'r',encoding='utf8')as fp:
@@ -205,27 +193,7 @@ def Anchored_Map(json_file, choose='left', r=3, center=(0.5,0.5), iterations=150
  
 json_file = './data/test.json'  
 pos_res = Anchored_Map(json_file)
-
-#%%
-# node_color = ['blue' if i in B else 'black' for i in range(len(g))]
-#%% 修改文件
-# json_file = 'test.json'  
-# data = read_json_file(json_file)
-# d = {}
-# for idx,n in enumerate(data['nodes']):
-#     n['id_'] = idx
-    
-#     d[n['id']] = n
-# data['new_nodes'] = d
-# for e in data['links']:
-#     source_id = e['source']
-#     target_id = e['target']
-#     source = data['new_nodes'][str(source_id)]
-#     target = data['new_nodes'][str(target_id)]
-#     e['source_'] = source['id_']
-#     e['target_'] = target['id_']
-# write_dic(data, 'bipartite_test_add_id_.json')
-# pos_res, data = Anchored_Map(json_file)   
+ 
     
   
     
