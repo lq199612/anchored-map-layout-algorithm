@@ -3,6 +3,7 @@
 >
 > the method about How to decide the order of anchor nodes from the paper ***Drawing Bipartite Graphs as Anchored Maps***， and use Fruchterman-Reingold algorithm (this part borrows from network's spring_layout，if you want to kown more , you can see the paper  ***Graph Drawing by Force-directed Placement***) to layout the free node。
 
+<<<<<<< HEAD
 There are many parameters here, you can choose tnem according to your needs，I will introduce some commonly used parameter choices here。
 
 #### Draw basic bipartite graph
@@ -36,4 +37,8 @@ pos_res1 = Anchored_Map(json_file,anchor_nodes=anchor_nodes)
 ```
 
 ![image](pic/pos_res3.jpg)
+=======
+the method about how to decide the order of anchor nodes from the paper ***Drawing Bipartite Graphs as Anchored Maps***， and use Fruchterman-Reingold algorithm (this part borrows from network's spring_layout，if you want to kown more , you can see the paper  ***Graph Drawing by Force-directed Placement***) to draw the free node, 
+>>>>>>> ccbccd220cd9e90764690586c13b6895d517f168
 
+![image](pic/res.jpg)

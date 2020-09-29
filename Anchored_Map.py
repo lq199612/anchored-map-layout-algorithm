@@ -117,11 +117,9 @@ def fruchterman_reingold_init(
     for iteration in range(iterations):
         # 计算每个点之间的距离
         delta = pos[:, np.newaxis, :] - pos[np.newaxis, :, :]  
-        distance = np.linalg.norm(delta, axis=-1)  # 求范数 默认二范数 可以求出不同点之间的距离 
-       
+        distance = np.linalg.norm(delta, axis=-1)  # 求范数 默认二范数 可以求出不同点之间的距离   
         # 制大小 最小为0.01    out：可以指定输出矩阵的对象，shape与a相同
         np.clip(distance, 0.01, None, out=distance) # 限
-        
         # 计算x,y方向上的累计位移
         a = (k * k / distance ** 2  - A * distance / k)
         displacement = np.einsum(
@@ -147,16 +145,18 @@ def fruchterman_reingold_init(
         if err < threshold:
             break
     pos = dict(zip(G, pos))
+<<<<<<< HEAD
     
     return pos          
+=======
+    return pos           
+>>>>>>> ccbccd220cd9e90764690586c13b6895d517f168
 
 def FR(g, A, random_pos,iterations,center,r,inner,show_img):
     matri = nx.to_numpy_array(g, weight='weight')
     B = np.array(A)
     pos = fruchterman_reingold_init(g,matri,pos=random_pos,fixed=B,center=center,r=r,inner=inner,iterations=iterations)
     if show_img:
-        print('B',B)
-        print('g.nodes',g.nodes)
         node_color = ['blue' if i in B else 'black' for i in g.nodes]
         plt.figure(figsize=(100,100))
         ax = plt.subplot(4,5,1)
@@ -206,6 +206,7 @@ def Anchored_Map(json_file, anchor_nodes=[], choose='left', r=3, center=(0.5,0.5
     for n in data['nodes']: 
         n['pos'] = pos_res[n['id_']]
     return pos_res
+<<<<<<< HEAD
 #%%
 json_file = './test.json'  
 pos_res1 = Anchored_Map(json_file)
@@ -214,3 +215,12 @@ pos_res2 = Anchored_Map(json_file,inner=True)
 #%%
 anchor_nodes = [0,1,2,3,4,5,6,7,8,9,10]
 pos_res1 = Anchored_Map(json_file,anchor_nodes=anchor_nodes)
+=======
+ 
+json_file = './data/test.json'  
+pos_res = Anchored_Map(json_file)
+ 
+    
+  
+    
+>>>>>>> ccbccd220cd9e90764690586c13b6895d517f168
