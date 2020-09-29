@@ -144,13 +144,8 @@ def fruchterman_reingold_init(
         err = np.linalg.norm(delta_pos) / nnodes
         if err < threshold:
             break
-    pos = dict(zip(G, pos))
-<<<<<<< HEAD
-    
+    pos = dict(zip(G, pos))    
     return pos          
-=======
-    return pos           
->>>>>>> ccbccd220cd9e90764690586c13b6895d517f168
 
 def FR(g, A, random_pos,iterations,center,r,inner,show_img):
     matri = nx.to_numpy_array(g, weight='weight')
@@ -206,7 +201,6 @@ def Anchored_Map(json_file, anchor_nodes=[], choose='left', r=3, center=(0.5,0.5
     for n in data['nodes']: 
         n['pos'] = pos_res[n['id_']]
     return pos_res
-<<<<<<< HEAD
 #%%
 json_file = './test.json'  
 pos_res1 = Anchored_Map(json_file)
@@ -215,12 +209,4 @@ pos_res2 = Anchored_Map(json_file,inner=True)
 #%%
 anchor_nodes = [0,1,2,3,4,5,6,7,8,9,10]
 pos_res1 = Anchored_Map(json_file,anchor_nodes=anchor_nodes)
-=======
- 
-json_file = './data/test.json'  
-pos_res = Anchored_Map(json_file)
- 
-    
-  
-    
->>>>>>> ccbccd220cd9e90764690586c13b6895d517f168
+
