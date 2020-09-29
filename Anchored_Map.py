@@ -89,29 +89,31 @@ def pos_init(g, A, anchored_pos):
         random_pos[k] = anchored_pos_[k]
     return anchored_pos_sorted, random_pos
 
+# 随机扰动
+def get_random_disturb():
+    return random.random()
+
 def fruchterman_reingold_init(
-   G, A, k=None, pos=None, fixed=None, iterations=100, threshold=1e-4, dim=2, seed=None
+   G, A, pos=None, fixed=None, iterations=100, threshold=1e-4, dim=2, seed=None,center=[0.5,0.5], r=0.5, inner = False, k=5
 ):
     # Position nodes in adjacency matrix A using Fruchterman-Reingold
     # Entry point for NetworkX graph is fruchterman_reingold_layout()
     nnodes, _ = A.shape
-    print('nnodes',nnodes)
     # 位置初始化
     if pos is None:
         seed = rdm()
         pos = np.asarray(seed.rand(nnodes, dim), dtype=A.dtype)
-        print('seed', type(seed) )
     else:
         pos = pos.astype(A.dtype)
     # 初始化k
-    if k is None:
-        k = np.sqrt(5.0 / nnodes)
+    # if k is None:
+        # k = np.sqrt(5.0 / nnodes)
+    k = np.sqrt(k / nnodes)
     # 初始化t
     t = max(max(pos.T[0]) - min(pos.T[0]), max(pos.T[1]) - min(pos.T[1])) * 0.1
     dt = t / float(iterations + 1)
     # 初始化 距离表  
     delta = np.zeros((pos.shape[0], pos.shape[0], pos.shape[1]), dtype=A.dtype)
-    # print('pos', pos)
     for iteration in range(iterations):
         # 计算每个点之间的距离
         delta = pos[:, np.newaxis, :] - pos[np.newaxis, :, :]  
@@ -132,8 +134,13 @@ def fruchterman_reingold_init(
         if fixed is not None:
             # don't change positions of fixed nodes
             delta_pos[fixed] = 0.0
-            print(fixed) if iteration == 0 else None 
-        pos += delta_pos
+        pos += delta_pos 
+        # 施加约束 使得自由节点都落入圆内
+        if inner:
+            centripetal_distance = np.linalg.norm(pos - center, axis=-1)
+            for idx, n in enumerate(centripetal_distance):
+                if n > r + 0.01 * get_random_disturb():
+                    pos[idx] = r/n * (pos[idx] + center) + (center - pos[idx]) * (r / 8)
         # 模拟降温
         t -= dt
         err = np.linalg.norm(delta_pos) / nnodes
@@ -141,12 +148,12 @@ def fruchterman_reingold_init(
             break
     pos = dict(zip(G, pos))
     
-    return pos           
+    return pos          
 
-def FR(g, A, random_pos,iterations,show_img):
+def FR(g, A, random_pos,iterations,center,r,inner,show_img):
     matri = nx.to_numpy_array(g, weight='weight')
     B = np.array(A)
-    pos = fruchterman_reingold_init(g,matri,pos=random_pos,fixed=B,iterations=iterations)
+    pos = fruchterman_reingold_init(g,matri,pos=random_pos,fixed=B,center=center,r=r,inner=inner,iterations=iterations)
     if show_img:
         print('B',B)
         print('g.nodes',g.nodes)
@@ -168,13 +175,18 @@ def write_dict(d, file_path):
     fileObject = open(file_path, 'w')  
     fileObject.write(jsObj)  
     
-def Anchored_Map(json_file, choose='left', r=3, center=(0.5,0.5), iterations=150, show_img=True): 
+def Anchored_Map(json_file, anchor_nodes=[], choose='left', r=3, center=(0.5,0.5), iterations=150, inner=False, show_img=True): 
     data = read_json_file(json_file)
     # 锚点
     A = []
     # 自由节点
     B = []
-    [A.append(n['id_']) if n['location'] == choose else  B.append(n['id_']) for n in data['nodes']]
+    if not anchor_nodes:
+        [A.append(n['id_']) if n['location'] == choose else  B.append(n['id_']) for n in data['nodes']]
+    # 指定锚点
+    else:
+        A = anchor_nodes
+        [B.append(n['id_']) if n['id_'] not in A else None  for n in data['nodes']]
     # 边
     E = [(i['source_'],i['target_']) for i in data['links']]
     # 生成图和锚点初始坐标
@@ -189,14 +201,16 @@ def Anchored_Map(json_file, choose='left', r=3, center=(0.5,0.5), iterations=150
     # 初始布局
     anchored_pos_sorted, random_pos = pos_init(g, A, anchored_pos)
     # 力导布局
-    pos_res = FR(g, A, random_pos,iterations=iterations,show_img=show_img)
+    pos_res = FR(g, A, random_pos,iterations=iterations,center=center,r=r,inner=inner,show_img=show_img)
     # 返回pos
     for n in data['nodes']: 
         n['pos'] = pos_res[n['id_']]
     return pos_res
- 
-json_file = './data/test.json'  
-pos_res = Anchored_Map(json_file)
-    
-  
-    
+#%%
+json_file = './test.json'  
+pos_res1 = Anchored_Map(json_file)
+#%%
+pos_res2 = Anchored_Map(json_file,inner=True) 
+#%%
+anchor_nodes = [0,1,2,3,4,5,6,7,8,9,10]
+pos_res1 = Anchored_Map(json_file,anchor_nodes=anchor_nodes)
