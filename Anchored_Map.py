@@ -97,7 +97,6 @@ def fruchterman_reingold_init(
    G, A, pos=None, fixed=None, iterations=100, threshold=1e-4, dim=2, seed=None,center=[0.5,0.5], r=0.5, inner = False, k=5
 ):
     # Position nodes in adjacency matrix A using Fruchterman-Reingold
-    # Entry point for NetworkX graph is fruchterman_reingold_layout()
     nnodes, _ = A.shape
     # 位置初始化
     if pos is None:
@@ -105,9 +104,7 @@ def fruchterman_reingold_init(
         pos = np.asarray(seed.rand(nnodes, dim), dtype=A.dtype)
     else:
         pos = pos.astype(A.dtype)
-    # 初始化k
-    # if k is None:
-        # k = np.sqrt(5.0 / nnodes)
+    # k 
     k = np.sqrt(k / nnodes)
     # 初始化t
     t = max(max(pos.T[0]) - min(pos.T[0]), max(pos.T[1]) - min(pos.T[1])) * 0.1
@@ -122,8 +119,9 @@ def fruchterman_reingold_init(
         np.clip(distance, 0.01, None, out=distance) # 限
         # 计算x,y方向上的累计位移
         a = (k * k / distance ** 2  - A * distance / k)
+        # 在不同维度上产生的合力 = 1 / distance (k * k / distance ** 2  - A * distance / k), einsum求和约定:"ijk,ij->ik" 点乘再累加
         displacement = np.einsum(
-            "ijk,ij->ik", delta, (k * k / distance ** 2  - A * distance / k)        # 在不同维度上产生的合力 = 1 / distance (k * k / distance ** 2  - A * distance / k), "ijk,ij->ik" 点乘再累加
+            "ijk,ij->ik", delta, (k * k / distance ** 2  - A * distance / k)       
         )
         # 更新
         length = np.linalg.norm(displacement, axis=-1)            
