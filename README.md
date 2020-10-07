@@ -1,9 +1,9 @@
 # anchored-map-layout-algorithm
 > A method of drawing anchored maps for bipartite graphs
 >
-> the method about How to decide the order of anchor nodes from the paper ***Drawing Bipartite Graphs as Anchored Maps***， and use Fruchterman-Reingold algorithm (this part borrows from network's spring_layout，if you want to kown more , you can see the paper  ***Graph Drawing by Force-directed Placement***) to layout the free node。
+> the method about how to decide the order of anchor nodes from the paper ***Drawing Bipartite Graphs as Anchored Maps***， and use Fruchterman-Reingold algorithm (this part borrows from network's spring_layout，if you want to kown more , you can see the paper  ***Graph Drawing by Force-directed Placement***) to layout the free node。
 
-There are many parameters here, you can choose tnem according to your needs，I will introduce some commonly used parameter choices here。
+There are many parameters, you can choose tnem according to your needs，I will introduce some commonly used parameter here。
 
 ## Draw basic bipartite graph
 
